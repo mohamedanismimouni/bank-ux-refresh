@@ -9,6 +9,7 @@ import {
   ChevronDown 
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { DataCard, DataCardHeader, DataFieldInput } from "@/components/ui/data-card";
 import {
@@ -34,10 +35,12 @@ const InvoiceDetail = () => {
           <ExternalLink className="h-4 w-4" />
           Afficher dans Le SIG
         </Button>
-        <Button className="gap-2 bg-brand-gold text-primary-foreground hover:bg-brand-gold-dark">
-          <ExternalLink className="h-4 w-4" />
-          Déverser dans Le SIG
-        </Button>
+        <Link to="/factures/1/deversement">
+          <Button className="gap-2 bg-brand-gold text-primary-foreground hover:bg-brand-gold-dark">
+            <ExternalLink className="h-4 w-4" />
+            Déverser dans Le SIG
+          </Button>
+        </Link>
       </div>
 
       {/* Invoice Info Card */}
