@@ -62,14 +62,6 @@ const DeversementPage = () => {
           </div>
         </div>
 
-        {/* Identification Banner */}
-        <div className="bg-brand-navy text-white rounded-lg px-5 py-3 mb-6 flex items-center gap-3">
-          <div className="h-8 w-8 bg-white/10 rounded-lg flex items-center justify-center">
-            <FileText className="h-4 w-4" />
-          </div>
-          <span className="font-semibold">Identification Facture : O.S.M - F2025198712</span>
-        </div>
-
         {/* Collapsible Invoice Info */}
         <Collapsible open={infoOpen} onOpenChange={setInfoOpen} className="mb-6">
           <CollapsibleTrigger asChild>
@@ -86,6 +78,13 @@ const DeversementPage = () => {
           </CollapsibleTrigger>
           <CollapsibleContent className="pt-4">
             <DataCard>
+              {/* Identification Banner inside the card */}
+              <div className="bg-brand-navy text-white rounded-lg px-4 py-2.5 mb-6 flex items-center gap-3">
+                <div className="h-7 w-7 bg-white/10 rounded flex items-center justify-center">
+                  <FileText className="h-3.5 w-3.5" />
+                </div>
+                <span className="text-sm font-semibold">Identification Facture : O.S.M - F2025198712</span>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
                 <DataFieldInput label="Activité" value="(Aucun)" />
                 <DataFieldInput label="Service destinataire" value="(Aucun)" />
