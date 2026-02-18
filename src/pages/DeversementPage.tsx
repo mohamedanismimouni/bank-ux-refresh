@@ -1,13 +1,15 @@
 import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import { ArrowLeft, CheckCircle, FileText, DollarSign, Receipt, Calculator } from "lucide-react";
+import { ArrowLeft, CheckCircle, FileText, ChevronDown } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DataCard, DataCardHeader, DataFieldInput } from "@/components/ui/data-card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 import DeversementAmounts from "@/components/deversement/DeversementAmounts";
 import DeversementDecomposition from "@/components/deversement/DeversementDecomposition";
 import DeversementTaxes from "@/components/deversement/DeversementTaxes";
@@ -15,6 +17,7 @@ import DeversementTaxes from "@/components/deversement/DeversementTaxes";
 const DeversementPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const [infoOpen, setInfoOpen] = useState(true);
 
   const handleValidate = () => {
     toast({ title: "Déversement validé", description: "Le déversement en dépense a été enregistré avec succès." });
@@ -67,83 +70,87 @@ const DeversementPage = () => {
           <span className="font-semibold">Identification Facture : O.S.M - F2025198712</span>
         </div>
 
+        {/* Collapsible Invoice Info */}
+        <Collapsible open={infoOpen} onOpenChange={setInfoOpen} className="mb-6">
+          <CollapsibleTrigger asChild>
+            <Button
+              variant="ghost"
+              className="w-full justify-between bg-brand-gold text-primary-foreground hover:bg-brand-gold-dark rounded-lg px-4 py-3 h-auto"
+            >
+              <div className="flex items-center gap-3">
+                <FileText className="h-5 w-5" />
+                <span className="font-semibold">Informations de la facture</span>
+              </div>
+              <ChevronDown className={`h-5 w-5 transition-transform ${infoOpen ? "rotate-180" : ""}`} />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="pt-4">
+            <DataCard>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
+                <DataFieldInput label="Activité" value="(Aucun)" />
+                <DataFieldInput label="Service destinataire" value="(Aucun)" />
+                <div className="space-y-1.5">
+                  <label className="form-label">Type Facture</label>
+                  <Select defaultValue="situation">
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="situation">Situation sur marché</SelectItem>
+                      <SelectItem value="avoir">Avoir</SelectItem>
+                      <SelectItem value="standard">Standard</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <DataFieldInput label="Code produit" value="(Aucun)" />
+                <DataFieldInput label="N°Dossier/Avenant" value="(Aucun)" />
+                <div className="space-y-1.5">
+                  <label className="form-label">Phase/Jalon</label>
+                  <div className="flex items-center gap-2 h-10">
+                    <StatusBadge variant="pending">À traiter</StatusBadge>
+                    <StatusBadge variant="success">Nouveau</StatusBadge>
+                  </div>
+                </div>
+
+                <DataFieldInput label="Nom Fournisseur CFE" value="O.S.M" />
+                <DataFieldInput label="Siret/Siren" value="81922564000013" />
+                <div className="space-y-1.5">
+                  <label className="form-label">Code Fournisseur/Libelle/Role</label>
+                  <Select defaultValue="osm">
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="osm">05732720/O.S.M/O.S.M/FOURN</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <DataFieldInput label="Référence Dépense de l'émetteur" value="F2025198712" />
+                <div className="space-y-1.5">
+                  <label className="form-label">Date de réception</label>
+                  <Input type="date" defaultValue="2026-02-18" />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="form-label">Date d'émission</label>
+                  <Input type="date" defaultValue="2025-12-01" />
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="form-label">Type payment</label>
+                  <Select defaultValue="sepa">
+                    <SelectTrigger><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="sepa">Virement SEPA</SelectItem>
+                      <SelectItem value="cheque">Chèque</SelectItem>
+                      <SelectItem value="prelevement">Prélèvement</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </DataCard>
+          </CollapsibleContent>
+        </Collapsible>
+
         {/* Amount Summary Cards */}
         <DeversementAmounts />
-
-        {/* Invoice Info Form */}
-        <DataCard className="mb-6">
-          <div className="flex items-start justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-brand-gold/10 rounded-lg flex items-center justify-center">
-                <FileText className="h-5 w-5 text-brand-navy" />
-              </div>
-              <div>
-                <h2 className="text-lg font-semibold">Informations de la facture</h2>
-                <p className="text-sm text-muted-foreground">Détails pour le déversement</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
-            <DataFieldInput label="Activité" value="(Aucun)" />
-            <DataFieldInput label="Service destinataire" value="(Aucun)" />
-            <div className="space-y-1.5">
-              <label className="form-label">Type Facture</label>
-              <Select defaultValue="situation">
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="situation">Situation sur marché</SelectItem>
-                  <SelectItem value="avoir">Avoir</SelectItem>
-                  <SelectItem value="standard">Standard</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <DataFieldInput label="Code produit" value="(Aucun)" />
-            <DataFieldInput label="N°Dossier/Avenant" value="(Aucun)" />
-            <div className="space-y-1.5">
-              <label className="form-label">Phase/Jalon</label>
-              <div className="flex items-center gap-2 h-10">
-                <StatusBadge variant="pending">À traiter</StatusBadge>
-                <StatusBadge variant="success">Nouveau</StatusBadge>
-              </div>
-            </div>
-
-            <DataFieldInput label="Nom Fournisseur CFE" value="O.S.M" />
-            <DataFieldInput label="Siret/Siren" value="81922564000013" />
-            <div className="space-y-1.5">
-              <label className="form-label">Code Fournisseur/Libelle/Role</label>
-              <Select defaultValue="osm">
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="osm">05732720/O.S.M/O.S.M/FOURN</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <DataFieldInput label="Référence Dépense de l'émetteur" value="F2025198712" />
-            <div className="space-y-1.5">
-              <label className="form-label">Date de réception</label>
-              <Input type="date" defaultValue="2026-02-18" />
-            </div>
-            <div className="space-y-1.5">
-              <label className="form-label">Date d'émission</label>
-              <Input type="date" defaultValue="2025-12-01" />
-            </div>
-
-            <div className="space-y-1.5">
-              <label className="form-label">Type payment</label>
-              <Select defaultValue="sepa">
-                <SelectTrigger><SelectValue /></SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="sepa">Virement SEPA</SelectItem>
-                  <SelectItem value="cheque">Chèque</SelectItem>
-                  <SelectItem value="prelevement">Prélèvement</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </DataCard>
 
         {/* Décomposition */}
         <DeversementDecomposition />
