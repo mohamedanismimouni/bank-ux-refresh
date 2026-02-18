@@ -1,6 +1,6 @@
 import Header from "@/components/layout/Header";
 import Breadcrumb from "@/components/layout/Breadcrumb";
-import { ArrowLeft, CheckCircle } from "lucide-react";
+import { ArrowLeft, CheckCircle, FileText, DollarSign, Receipt, Calculator } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { DataCard, DataCardHeader, DataFieldInput } from "@/components/ui/data-card";
@@ -8,6 +8,9 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import DeversementAmounts from "@/components/deversement/DeversementAmounts";
+import DeversementDecomposition from "@/components/deversement/DeversementDecomposition";
+import DeversementTaxes from "@/components/deversement/DeversementTaxes";
 
 const DeversementPage = () => {
   const navigate = useNavigate();
@@ -46,7 +49,7 @@ const DeversementPage = () => {
             <Link to="/factures/1">
               <Button variant="outline" className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
-                Retour vers le détail
+                Retour
               </Button>
             </Link>
             <Button onClick={handleValidate} className="gap-2 bg-brand-gold text-primary-foreground hover:bg-brand-gold-dark">
@@ -57,13 +60,30 @@ const DeversementPage = () => {
         </div>
 
         {/* Identification Banner */}
-        <div className="bg-brand-navy text-white rounded-lg px-5 py-3 mb-6 font-semibold">
-          Identification Facture : O.S.M - F2025198712
+        <div className="bg-brand-navy text-white rounded-lg px-5 py-3 mb-6 flex items-center gap-3">
+          <div className="h-8 w-8 bg-white/10 rounded-lg flex items-center justify-center">
+            <FileText className="h-4 w-4" />
+          </div>
+          <span className="font-semibold">Identification Facture : O.S.M - F2025198712</span>
         </div>
+
+        {/* Amount Summary Cards */}
+        <DeversementAmounts />
 
         {/* Invoice Info Form */}
         <DataCard className="mb-6">
-          <DataCardHeader title="Informations de la facture" subtitle="Détails pour le déversement" />
+          <div className="flex items-start justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 bg-brand-gold/10 rounded-lg flex items-center justify-center">
+                <FileText className="h-5 w-5 text-brand-navy" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold">Informations de la facture</h2>
+                <p className="text-sm text-muted-foreground">Détails pour le déversement</p>
+              </div>
+            </div>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-5">
             <DataFieldInput label="Activité" value="(Aucun)" />
             <DataFieldInput label="Service destinataire" value="(Aucun)" />
@@ -126,83 +146,10 @@ const DeversementPage = () => {
         </DataCard>
 
         {/* Décomposition */}
-        <DataCard className="mb-6">
-          <DataCardHeader title="Décomposition" subtitle="Ventilation des montants HT" />
-          <div className="space-y-4">
-            {/* Total row */}
-            <div className="flex items-center gap-4 p-3 bg-secondary/50 rounded-lg">
-              <span className="text-sm font-medium text-muted-foreground min-w-[140px]">Base Total HT</span>
-              <span className="text-lg font-bold text-foreground ml-auto">100.0</span>
-            </div>
-            {/* Header */}
-            <div className="border border-border rounded-lg overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-secondary">
-                  <tr>
-                    <th className="text-left p-3 font-medium">Rubrique immobilisation</th>
-                    <th className="text-left p-3 font-medium">Imputation Analytique</th>
-                    <th className="text-right p-3 font-medium">Base HT</th>
-                    <th className="text-left p-3 font-medium">Type de Taxe</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t border-border">
-                    <td className="p-3">—</td>
-                    <td className="p-3">Honoraires CTX</td>
-                    <td className="p-3 text-right font-semibold">100</td>
-                    <td className="p-3">TVARM</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </DataCard>
+        <DeversementDecomposition />
 
         {/* Liste des taxes */}
-        <DataCard className="mb-6">
-          <DataCardHeader title="Liste des taxes" subtitle="Récapitulatif des taxes applicables" />
-          <div className="space-y-4">
-            <div className="flex items-center gap-4 p-3 bg-secondary/50 rounded-lg">
-              <span className="text-sm font-medium text-muted-foreground min-w-[140px]">Base Total</span>
-              <div className="ml-auto flex items-center gap-8">
-                <div className="text-center">
-                  <p className="text-xs text-muted-foreground">Base HT</p>
-                  <p className="font-bold">100.0</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-muted-foreground">Taxe</p>
-                  <p className="font-bold">10.0</p>
-                </div>
-                <div className="text-center">
-                  <p className="text-xs text-muted-foreground">TTC</p>
-                  <p className="font-bold text-brand-navy">110.0</p>
-                </div>
-              </div>
-            </div>
-            <div className="border border-border rounded-lg overflow-hidden">
-              <table className="w-full text-sm">
-                <thead className="bg-secondary">
-                  <tr>
-                    <th className="text-left p-3 font-medium">Type de Taxe</th>
-                    <th className="text-right p-3 font-medium">Taux de Taxe</th>
-                    <th className="text-right p-3 font-medium">Base HT</th>
-                    <th className="text-right p-3 font-medium">Montant Taxe</th>
-                    <th className="text-right p-3 font-medium">Montant TTC</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="border-t border-border">
-                    <td className="p-3 font-medium">TVARM</td>
-                    <td className="p-3 text-right">10</td>
-                    <td className="p-3 text-right">100</td>
-                    <td className="p-3 text-right">10</td>
-                    <td className="p-3 text-right font-semibold">110</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </DataCard>
+        <DeversementTaxes />
       </main>
     </div>
   );
